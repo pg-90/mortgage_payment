@@ -1,6 +1,5 @@
-# utils/mortgage_utils.py
+# utils/mortgage_calculator.py
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def calculate_mortgage_payment(principal, annual_interest_rate, years):
@@ -24,17 +23,29 @@ def generate_amortization_schedule(principal, annual_interest_rate, years):
     monthly_interest_rate = annual_interest_rate / 100 / 12
 
     months = np.arange(1, years * 12 + 1)
-    principal_paid = []
-    interest_paid = []
     balance = []
 
     for _ in months:
         interest = remaining_balance * monthly_interest_rate
         principal_component = monthly_payment - interest
         remaining_balance -= principal_component
-
-        interest_paid.append(interest)
-        principal_paid.append(principal_component)
         balance.append(remaining_balance)
 
-    return months, principal_paid, interest_paid, balance
+    return months, balance
+
+
+def accumulate_mortgages(mortgages):
+    total_years = max(m["years"] for m in mortgages)
+    total_months = total_years * 12
+    total_balance = np.zeros(total_months)
+    months = np.arange(1, total_months + 1)
+
+    for mortgage in mortgages:
+        _, balance = generate_amortization_schedule(
+            mortgage["principal"], mortgage["rate"], mortgage["years"]
+        )
+        total_balance[: len(balance)] += (
+            balance  # Add balance to the corresponding months
+        )
+
+    return months, total_balance
