@@ -81,7 +81,10 @@ years = st.slider(
     "Investment Period (Years):", min_value=1, max_value=30, step=1, value=5
 )
 current_savings = st.number_input(
-    "Current Account Savings (HUF):", min_value=0, max_value=100_000_000, value=10_000_000
+    "Current Account Savings (HUF):",
+    min_value=0,
+    max_value=100_000_000,
+    value=10_000_000,
 )
 
 if st.button("Calculate Savings and Plot"):
